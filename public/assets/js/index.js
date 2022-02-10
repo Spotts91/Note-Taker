@@ -62,4 +62,39 @@ var handleNoteSave = function() {
 };
 
 // Delete the clicked note
+var handleNoteDelete = function(event) {
+  // prevents the click listener for the list from being called when the button inside of it is clicked
+  event.stopPropagation();
 
+  var note = $(this).data('id');
+
+  if (activeNote.id === note) {
+    activeNote = {};
+  }
+
+  deleteNote(note);
+  getAndRenderNotes();
+  renderActiveNote();
+};
+
+// Set the activeNote and displays it
+var handleNoteView = function() {
+  activeNote = $(this).data();
+  renderActiveNote();
+};
+
+// Sets the activeNote to empty object and allows the suer to enter a new note
+var handleNoteView = function() {
+  activeNote = $(this).data();
+  renderActiveNote();
+};
+
+// If a note's title or text are empty, hide the save button
+// Or else show it
+var handleRenderSaveBtn = function() {
+  if (!$noteTitle.val().trim() || !$noteText.val().trim()) {
+    $saveNoteBtn.hide();
+  } else {
+    $saveNoteBtn.show();
+  }
+};
