@@ -98,3 +98,44 @@ var handleRenderSaveBtn = function() {
     $saveNoteBtn.show();
   }
 };
+
+// Render's the list of note titles
+var renderNoteList = function(notes) {
+  $noteList.empty();
+
+  varNoteListItems = [];
+
+  for (var i=0; i < notes.length; i++) {
+    var note = notes[i];
+
+    var $li = $("<li class='list-group-items'>").data(note);
+    $li.data('id', i);
+
+    var $span = $("<span>").text(note.title);
+    var $delBtn = $(
+      "<i class='fas fa-trash-alt float-right text-danger delete-note' data-id="+i+">"
+    );
+
+    $li.append($span, $delBtn);
+    NoteListItems.push($li);
+  }
+
+  $noteList.append(noteListItems);
+};
+
+// Get notes from the db and renders them to the sidebar
+var getAndRenderNotes = function() {
+  return getNotes().then(function(data) {
+    renderNoteList(data);
+  });
+};
+
+$saveNoteBtn.on("click", handleNoteSave);
+$noteList.on("click", ".list-group-item", handleNoteView);
+$newNoteBtn.on("click", handleNewNoteView);
+$noteList.on("click", ".delete-note", handleNoteDelete);
+$noteTitle.on("keyup", handleRenderSaveBtn);
+$noteText.on("keyup", handleRenderSaveBtn);
+
+// GEts and renders the intial list of notes
+getAndRenderNotes();
