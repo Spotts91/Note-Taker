@@ -7,11 +7,10 @@ var $noteList = $(".list-container .list-group");
 // activeNote is used to keep track of the note in the textarea
 var activeNote = {};
 
-// A function for getting all the notes from the db
+// A function for getting all notes from the db
 var getNotes = function() {
   return $.ajax({
     url: "/api/notes",
-    data: note,
     method: "GET"
   });
 };
@@ -20,16 +19,17 @@ var getNotes = function() {
 var saveNote = function(note) {
   return $.ajax({
     url: "/api/notes",
-    method: "GET"
+    data: note,
+    method: "POST"
   });
 };
 
 // A function for deleting a note from the db
 var deleteNote = function(id) {
   return $.ajax({
-    url: "api/notes" + id,
+    url: "api/notes/" + id,
     method: "DELETE"
-  });
+  })
 };
 
 // If there is an activeNote, display it, otherwise render empty inputs
@@ -53,7 +53,7 @@ var renderActiveNote = function() {
 var handleNoteSave = function() {
   var newNote = {
     title: $noteTitle.val(),
-    text: $noteTextx.val()
+    text: $noteText.val()
   };
 
   saveNote(newNote);
@@ -77,15 +77,15 @@ var handleNoteDelete = function(event) {
   renderActiveNote();
 };
 
-// Set the activeNote and displays it
+// Sets the activeNote and displays it
 var handleNoteView = function() {
   activeNote = $(this).data();
   renderActiveNote();
 };
 
-// Sets the activeNote to empty object and allows the suer to enter a new note
-var handleNoteView = function() {
-  activeNote = $(this).data();
+// Sets the activeNote to and empty object and allows the user to enter a new note
+var handleNewNoteView = function() {
+  activeNote = {};
   renderActiveNote();
 };
 
@@ -103,13 +103,13 @@ var handleRenderSaveBtn = function() {
 var renderNoteList = function(notes) {
   $noteList.empty();
 
-  varNoteListItems = [];
+  var noteListItems = [];
 
-  for (var i=0; i < notes.length; i++) {
+  for (var i = 0; i < notes.length; i++) {
     var note = notes[i];
 
-    var $li = $("<li class='list-group-items'>").data(note);
-    $li.data('id', i);
+    var $li = $("<li class='list-group-item'>").data(note);
+    $li.data('id',i);
 
     var $span = $("<span>").text(note.title);
     var $delBtn = $(
@@ -117,13 +117,13 @@ var renderNoteList = function(notes) {
     );
 
     $li.append($span, $delBtn);
-    NoteListItems.push($li);
+    noteListItems.push($li);
   }
 
   $noteList.append(noteListItems);
 };
 
-// Get notes from the db and renders them to the sidebar
+// Gets notes from the db and renders them to the sidebar
 var getAndRenderNotes = function() {
   return getNotes().then(function(data) {
     renderNoteList(data);
@@ -137,5 +137,5 @@ $noteList.on("click", ".delete-note", handleNoteDelete);
 $noteTitle.on("keyup", handleRenderSaveBtn);
 $noteText.on("keyup", handleRenderSaveBtn);
 
-// GEts and renders the intial list of notes
+// Gets and renders the initial list of notes
 getAndRenderNotes();
